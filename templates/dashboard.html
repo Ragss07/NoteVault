@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="text-white mb-4">
+        👋 Welcome, {{ username }}
+    </h2>
+
+    <!-- Add Note Card -->
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <h4 class="mb-3">Add a Note</h4>
+
+            <form action="/add_note" method="POST">
+
+                <div class="mb-3">
+                    <input
+                        type="text"
+                        name="title"
+                        class="form-control"
+                        placeholder="Enter note title"
+                        required>
+                </div>
+
+                <div class="mb-3">
+                    <textarea
+                        name="content"
+                        rows="4"
+                        class="form-control"
+                        placeholder="Write your note here..."
+                        required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Add Note
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <h3 class="mb-3 text-white">My Notes</h3>
+
+    {% if notes %}
+
+        <div class="row">
+
+        {% for note in notes %}
+
+            <div class="col-md-6 mb-3">
+
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h5>{{ note.title }}</h5>
+
+                        <p>{{ note.content }}</p>
+
+                        <form action="/delete_note/{{ note.id }}" method="POST">
+
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                🗑 Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            No notes available. Create your first note!
+        </div>
+
+    {% endif %}
+
+</div>
+<button class="btn btn-secondary mb-3" onclick="history.back()">
+    ← Back
+</button>
+
+{% endblock %}

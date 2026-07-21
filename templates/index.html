@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row min-vh-100 justify-content-center align-items-center">
+
+        <div class="col-md-8 col-lg-7">
+
+            <div class="card shadow-lg border-0 rounded-4 p-5 text-center">
+
+                <h1 class="display-3 fw-bold">
+                    🔐 NoteVault
+                </h1>
+
+                <h4 class="text-primary fw-bold mt-3">
+                    Secure Notes Management System
+                </h4>
+
+                <p class="lead text-muted mt-3">
+                    Store your personal notes securely using Flask, MySQL and Bootstrap.
+                </p>
+
+                <!-- Technology Badges -->
+                <div class="mt-4">
+
+                    <span class="badge bg-primary fs-6 p-2">
+                        🐍 Flask
+                    </span>
+
+                    <span class="badge bg-success fs-6 p-2">
+                        🐬 MySQL
+                    </span>
+
+                    <span class="badge bg-warning text-dark fs-6 p-2">
+                        🎨 Bootstrap
+                    </span>
+
+                    <span class="badge bg-dark fs-6 p-2">
+                        ⚙️ DevOps
+                    </span>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="mt-5">
+
+                    <a href="/login" class="btn btn-primary btn-lg px-5 me-3">
+                        Login
+                    </a>
+
+                    <a href="/register" class="btn btn-success btn-lg px-5">
+                        Register
+                    </a>
+
+                </div>
+
+                <hr class="my-5">
+
+                <p class="text-muted mb-0">
+                    Build • Secure • Deploy 🚀
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
