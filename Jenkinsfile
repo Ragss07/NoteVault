@@ -11,13 +11,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t notevault:v1 .'
+                sh 'docker build -t notevault:v1 .'
             }
         }
 
         stage('Run Docker Compose') {
             steps {
-                bat 'docker compose up -d'
+                sh 'docker compose up -d'
             }
         }
     }
