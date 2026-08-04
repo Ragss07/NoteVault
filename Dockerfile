@@ -1,13 +1,12 @@
-FROM jenkins/jenkins:lts
+FROM python:3.13-slim
 
-USER root
+WORKDIR /app
 
-RUN apt-get update && 
-    apt-get install -y docker.io
+COPY . .
 
-RUN curl -SL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN chmod +x /usr/local/bin/docker-compose
+CMD ["python", "app.py"]
 
 # Keep running as root
 
