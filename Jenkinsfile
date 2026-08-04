@@ -2,22 +2,31 @@ pipeline {
     agent any
 
     stages {
-
-        stage('Clone') {
+        stage('Download Docker Compose') {
             steps {
-                echo 'Repository cloned successfully'
+                sh '''
+                    echo "Downloading standalone Docker Compose binary..."
+                    curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o docker-compose
+                    chmod +x docker-compose
+                    
+                    # Verify it works
+                    ./docker-compose version
+                '''
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Deploy Application') {
             steps {
-                sh 'docker build -t notevault:v1 .'
-            }
-        }
-
-        stage('Run Docker Compose') {
-            steps {
-                sh 'docker compose up -d'
+                sh '''
+                    # Stop any old containers
+                    ./docker-compose down --remove-orphans || true
+                    
+                    # Build and start the app
+                    ./docker-compose up -d --build
+                    
+                    # Show running containers
+                    ./docker-compose ps
+                '''
             }
         }
     }
