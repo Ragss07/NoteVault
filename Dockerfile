@@ -1,9 +1,21 @@
-FROM python:3.13-slim
+//FROM jenkins/jenkins:lts
 
-WORKDIR /app
+//USER root
 
-COPY . .
+//RUN apt-get update && \
+    apt-get install -y docker.io
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Keep running as root
 
-CMD ["python", "app.py"]
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Install Docker CLI and curl
+RUN apt-get update && \
+    apt-get install -y docker.io curl
+
+# Install Docker Compose V2 plugin so Jenkins can run "docker compose"
+RUN mkdir -p /usr/local/lib/docker/cli-plugins && \
+    curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose && \
+    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
