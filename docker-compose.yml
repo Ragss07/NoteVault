@@ -1,24 +1,38 @@
-version: "3.9"
-
 services:
   mysql:
     image: mysql:8.0
     container_name: mysql-db
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: "2027"
       MYSQL_DATABASE: devops_db
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      # If you want to initialize database with SQL script, create init.sql first
+      # then uncomment the next line:
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p2027"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   web:
     build: .
     container_name: notevault-app
+    restart: unless-stopped
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     ports:
-      - "5000:5000"
+      - "8080:5000"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: root
+      DB_PASSWORD: "2027"
+      DB_NAME: devops_db
 
 volumes:
   mysql-data:
