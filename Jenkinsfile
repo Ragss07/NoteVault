@@ -1,33 +1,66 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "raginikanojiya/notevault"
+    }
+
     stages {
-        stage('Download Docker Compose') {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Verify Pipeline') {
+            steps {
+                echo '====================================='
+                echo 'THIS IS THE LATEST JENKINSFILE'
+                echo '====================================='
+            }
+        }
+
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    echo "Downloading standalone Docker Compose binary..."
-                    curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o docker-compose
-                    chmod +x docker-compose
-                    
-                    # Verify it works
-                    ./docker-compose version
+                    docker build -t $IMAGE_NAME:v1 .
                 '''
             }
         }
 
-        stage('Deploy Application') {
+        stage('Login to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
             steps {
                 sh '''
-                    # Stop any old containers
-                    ./docker-compose down --remove-orphans || true
-                    
-                    # Build and start the app
-                    ./docker-compose up -d --build
-                    
-                    # Show running containers
-                    ./docker-compose ps
+                    docker push $IMAGE_NAME:v1
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+        always {
+            sh 'docker logout || true'
         }
     }
 }
